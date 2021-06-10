@@ -1,10 +1,11 @@
 package org.wisdom.netty.websocket;
 
+import org.apache.log4j.Logger;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.apache.log4j.Logger;
 
 public class NioWebSocketServer {
     private final Logger logger=Logger.getLogger(this.getClass());
