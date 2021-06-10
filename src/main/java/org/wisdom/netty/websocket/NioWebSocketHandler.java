@@ -7,8 +7,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import org.apache.log4j.Logger;
 import org.wisdom.netty.global.ChannelSupervise;
+import org.wisdom.netty.pojo.JsonRootBean;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,6 +40,8 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
 
     private WebSocketServerHandshaker handshaker;
 
+    private static boolean flag = false;
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.debug("收到消息：" + msg);
@@ -52,6 +59,7 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
         // 添加连接
         logger.debug("客户端加入连接：" + ctx.channel());
         ChannelSupervise.addChannel(ctx.channel());
+        timer1();
     }
 
     @Override
@@ -95,16 +103,23 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
 
     // 第一种方法：设定指定任务task在指定时间time执行 schedule(TimerTask task, Date time)
     public static void timer1() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                TextWebSocketFrame tws = new TextWebSocketFrame(simpleDateFormat.format((new Date())));
-                // 群发
-                timer1();
-                ChannelSupervise.send2All(tws);
-            }
-        }, 5000);// 设定指定的时间time,此处为2000毫秒
+        if (!flag) {
+            flag = true;
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                public void run() {
+                    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    // TextWebSocketFrame tws = new TextWebSocketFrame(simpleDateFormat.format((new Date())));
+                    String jsonObject = "{\"Gauge\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.66}]},\"Gauge2\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.88}]},\"Gauge3\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.4,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.44}]},\"Gauge4\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.5,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.94}]}}";
+                    JsonRootBean obj = JSON.parseObject(jsonObject, JsonRootBean.class);
+                    TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(obj));
+                    // 群发
+                    ChannelSupervise.send2All(tws);
+                    flag = false;
+                    timer1();
+                }
+            }, 5000);// 设定指定的时间time,此处为2000毫秒
+        }
     }
 
     /**

@@ -27,4 +27,7 @@ public class ChannelSupervise {
     public static void send2All(TextWebSocketFrame tws){
         GlobalGroup.writeAndFlush(tws);
     }
+    public static void send22222All(Object tws){
+        GlobalGroup.writeAndFlush(tws);
+    }
 }
