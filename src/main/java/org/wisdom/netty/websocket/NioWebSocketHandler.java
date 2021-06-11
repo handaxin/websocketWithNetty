@@ -108,9 +108,10 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 public void run() {
-                    // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    // TextWebSocketFrame tws = new TextWebSocketFrame(simpleDateFormat.format((new Date())));
-                    String jsonObject = "{\"Gauge\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.66}]},\"Gauge2\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.88}]},\"Gauge3\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.4,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.44}]},\"Gauge4\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.5,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.94}]}}";
+                    String ttt = String.format("%.2f", Math.random());
+                    String jsonObject = "{\"gauge\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":"
+                            + ttt
+                            + "}]},\"gauge2\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.8,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.88}]},\"gauge3\":{\"categories\":[{\"value\":0.2,\"color\":\"#1890ff\"},{\"value\":0.4,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.44}]},\"gauge4\":{\"categories\":[{\"value\":0.4,\"color\":\"#1890ff\"},{\"value\":0.5,\"color\":\"#2fc25b\"},{\"value\":1,\"color\":\"#f04864\"}],\"series\":[{\"name\":\"完成率\",\"data\":0.94}]}}";
                     JsonRootBean obj = JSON.parseObject(jsonObject, JsonRootBean.class);
                     TextWebSocketFrame tws = new TextWebSocketFrame(JSON.toJSONString(obj));
                     // 群发
